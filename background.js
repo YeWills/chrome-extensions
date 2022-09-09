@@ -1,19 +1,32 @@
 
 var ruleCookieId = 199;//此数字随机写即可；
 
-// var sourceUrl = 'https://www.baidu.com'
-var sourceUrl = 'http://xn.magichznpm.com'
+var sourceUrl = ''
+// var sourceUrl = 'http://xn.magichznpm.com'
 
-var targetDomain = 'www.axihe.com'
+// var targetDomain = 'www.axihe.com'
+var targetDomain = ''
 
 
+function getdomain(url){
+    // 例如'www.axihe.com' 请求地址转域名，需求去掉前面的 www ，然后加上 .
+    return `.${url.split('.').slice(1).join('.')}`
+}
 
 async function getCookieValues(source){
-    const cookies = await chrome.cookies.getAll(
+    let cookies = await chrome.cookies.getAll(
         {url:source}
     )
 
     if(!cookies) return;
+
+    // 需要加上原来的cookie
+    const origincookies = await chrome.cookies.getAll(
+        {domain: getdomain(targetDomain)}
+    )
+    if(origincookies?.length){
+        cookies = [...cookies, ...origincookies]
+    }
 
     // 类似 "name=KJRiG5DUI; girl=beautiful; "
    const cookieValue = cookies.map(({name, value})=>{
@@ -89,23 +102,10 @@ chrome.cookies.onChanged.addListener(function({cause,cookie,removed}){
 
 chrome.runtime.onMessage.addListener((request, sender, sendResponse) => {
       if (request.type === 'updatecookie') {
-        const {sourceUrl, targetDomain } = request;
-        sourceUrl = sourceUrl
-        targetDomain = targetDomain
+        sourceUrl = request.sourceUrl
+        targetDomain = request.targetDomain
         updateRules()
       }
 })
 
 
-// chrome.runtime.sendMessage(
-//     {
-//         type: 'cookieStatus',
-//         cookieStatus,
-//         superCookieList
-//     },
-//     (res) => {
-//         if (res.success) {
-//             this.setState({cookieStatus: res.cookieStatus, getStatus: true})
-//         }
-//     }
-// );
