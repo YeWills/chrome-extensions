@@ -1,7 +1,14 @@
 {
-  "name": "new cookie",
+  "name": "跨域Cookie转发",
   "manifest_version": 3,
   "version": "1.0",
+  "description": "跨域转发cookie",
+  "icons": {
+    "16": "icons/icon64.png",
+    "32": "icons/icon64.png",
+    "48": "icons/icon64.png",
+    "128": "icons/icon64.png"
+  },
   "permissions": [
     "storage",
     "webRequest",

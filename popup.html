@@ -1,7 +1,7 @@
 <!doctype html>
 <html>
   <head>
-    <!-- <script src="./popup.js" type="module"></script> -->
+    <meta charset="UTF-8"/> 
     <script src="./popup.js" ></script>
   </head>
 <body>
@@ -9,11 +9,12 @@
     <label for="source">cookie来源地址:</label>
     <input type="text" id="source">
     <br>
-    <label for="target">设置域名:</label>
+    <label for="target">cookie转发目标域名:</label>
     <input type="text" id="target">
     <br>
-    <button id="set">set Cookies</button>
   </form>
-  <span id="message" hidden></span>
+  <span id="message">插件已关闭</span>
+  <button id="openOrClose">开启</button>
+ 
 </body>
 </html>

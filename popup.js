@@ -1,12 +1,40 @@
 function init(){
   const form = document.getElementById("control-row");
-const setbtn = document.getElementById("set");
 const source = document.getElementById("source");
 const target = document.getElementById("target");
-const message = document.getElementById("message");
+const messagenode = document.getElementById("message");
+const openOrClose = document.getElementById("openOrClose");
 
 
-form.addEventListener("submit", handleFormSubmit);
+openOrClose.addEventListener("click", handleopenOrClose);
+
+
+
+function handleopenOrClose(){
+  if(messagenode.innerText === '插件已开启'){
+   
+    chrome.runtime.sendMessage(
+      {
+          type: 'setStatus',
+          value: 'close', 
+      },
+      (res) => {
+        console.log('ok')
+      }
+  );
+  messagenode.innerText = '插件已关闭'
+  openOrClose.innerText = ' 开启'
+    return;
+  }
+  if(messagenode.innerText === '插件已关闭'){
+
+    handleFormSubmit()
+
+  messagenode.innerText = '插件已开启'
+  openOrClose.innerText = ' 关闭'
+    return;
+  }
+}
 
 async function handleFormSubmit(event) {
   event.preventDefault();

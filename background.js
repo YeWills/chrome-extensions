@@ -7,6 +7,14 @@ var sourceUrl = ''
 // var targetDomain = 'www.axihe.com'
 var targetDomain = ''
 
+// 关闭插件
+function closeEvent(){
+    chrome.declarativeNetRequest.updateDynamicRules({
+        removeRuleIds: [ruleCookieId], 
+      }, function(){
+        console.log('卸载cookie')
+      });
+}
 
 function getdomain(url){
     // 例如'www.axihe.com' 请求地址转域名，需求去掉前面的 www ，然后加上 .
@@ -47,11 +55,7 @@ async function updateRules(){
 
     // 如果没有cookieval值，说明不用给请求头设置cookie，那么清除原来的ruleid
     if(!cookieval) {
-        chrome.declarativeNetRequest.updateDynamicRules({
-          removeRuleIds: [ruleCookieId], 
-        }, function(){
-          console.log('卸载cookie')
-        });
+        closeEvent()
         return;
     }
    
@@ -85,7 +89,8 @@ async function updateRules(){
 
 
 chrome.runtime.onInstalled.addListener(() => {
-    updateRules()
+    // 默认不开启
+    // updateRules()
 });
 
 chrome.cookies.onChanged.addListener(function({cause,cookie,removed}){
@@ -105,7 +110,27 @@ chrome.runtime.onMessage.addListener((request, sender, sendResponse) => {
         sourceUrl = request.sourceUrl
         targetDomain = request.targetDomain
         updateRules()
+        // sendResponse 一定要调用，否则报错
+        // https://blog.csdn.net/m0_37729058/article/details/89186257
+        sendResponse('get msg')
       }
 })
+
+
+
+chrome.runtime.onMessage.addListener((request, sender, sendResponse) => {
+      if (request.type === 'setStatus') {
+        if(request.value ==='close'){
+            closeEvent()
+            sendResponse('close')
+            return
+        }
+        updateRules();
+        sendResponse('open')
+       
+      }
+})
+
+
 
 
