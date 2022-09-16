@@ -7,6 +7,16 @@ const openOrClose = document.getElementById("openOrClose");
 
 openOrClose.addEventListener("click", handleopenOrClose);
 
+function stringToUrl(url){
+  return url.trim()
+ }
+
+const defaultvals ={
+  defaultsource: 'https://test-xxxx-xxxxxxx.com',
+  defaulttarget: 'upload.xxxxx.com',
+  defaultmessagenode: '插件已关闭',
+  defaultopenOrClose: '开启',
+}
 
 
 function handleopenOrClose(){
@@ -28,6 +38,11 @@ function handleopenOrClose(){
   }
   if(messagenode.innerText === '插件已关闭'){
 
+    let sourceUrl = stringToUrl(source.value);
+    let targetDomain = stringToUrl(target.value);
+  
+    if(!sourceUrl || !targetDomain) return;
+
     handleFormSubmit()
 
   messagenode.innerText = '插件已开启'
@@ -40,10 +55,10 @@ function initrender(){
   chrome.storage.local.get(['___sourceUrl___','___targetDomain___','___cookiemsg___','___cookiestatus___',], function(result) {
     console.log('Value currently is ' + result);
     console.log('Value currently is ' + result.___sourceUrl___);
-    source.value=result.___sourceUrl___
-    target.value=result.___targetDomain___
-    messagenode.innerText=result.___cookiemsg___
-    openOrClose.innerText=result.___cookiestatus___
+    source.value=result.___sourceUrl___ || defaultvals.defaultsource
+    target.value=result.___targetDomain___ || defaultvals.defaulttarget
+    messagenode.innerText=result.___cookiemsg___ || defaultvals.defaultmessagenode
+    openOrClose.innerText=result.___cookiestatus___ || defaultvals.defaultopenOrClose
   });
 }
 initrender()
@@ -63,12 +78,12 @@ function onClose(){
 async function handleFormSubmit(event) {
 
   // clearMessage();
-  function stringToUrl(url){
-   return url.trim()
-  }
+ 
 
   let sourceUrl = stringToUrl(source.value);
   let targetDomain = stringToUrl(target.value);
+
+  if(!sourceUrl || !targetDomain) return;
 
   onOpen(sourceUrl, targetDomain)
   

@@ -7,6 +7,14 @@ var sourceUrl = ''
 // var targetDomain = 'www.axihe.com'
 var targetDomain = ''
 
+// 可以自定义
+const defaultDomainToUrl = (domain)=>{
+    console.log(domain.split('.')[0])
+    return domain.split('.')[0]
+  }
+
+var domainToUrlfn = defaultDomainToUrl
+
 // 关闭插件
 function closeEvent(){
     chrome.declarativeNetRequest.updateDynamicRules({
@@ -77,7 +85,8 @@ async function updateRules(){
                 ]
                 },
                 condition: {
-                    domains:[targetDomain],
+                    // requestMethods:['post'],
+                    urlFilter: domainToUrlfn(targetDomain),
                 },
             }
         ],
